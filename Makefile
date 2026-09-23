@@ -6,7 +6,7 @@
 #    By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:45:24 by nedo-nas          #+#    #+#              #
-#    Updated: 2026/09/22 15:23:02 by nedo-nas         ###   ########.fr        #
+#    Updated: 2026/09/23 11:36:56 by nedo-nas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ FLAGS = -Wall -Wextra -Werror
 
 HEADER = codexion.h
 
-SOURCES = srcs/parsing.c srcs/helpers.c srcs/codexion.c
+SOURCES = srcs/parsing.c srcs/helpers.c srcs/codexion.c srcs/coders.c
 
 OBJS = $(SOURCES:.c=.o)
 

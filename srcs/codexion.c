@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:03:58 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/22 16:54:16 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/23 12:13:34 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,17 @@ int	display_error(void)
 
 int	main(int ac, char **av)
 {
-	t_initial_data *data;
+	t_table *table;
 
 	if (ac != 9)
 		return (display_error());
-	data = parsing(av + 1);
-	if (!data)
+	table = parsing(av + 1);
+	if (!table)
 		return (display_error());
-	return (free(data), 0);
+	if (!iniciate_table(table))
+		return (free(table->coders), free(table->dongles),
+			free(table),display_error());
+	print_table(table);
+	printf("Deu Certo");
+	return (free(table->coders), free(table->dongles), free(table), 0);
 }

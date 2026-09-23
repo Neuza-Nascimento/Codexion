@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:00:37 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/22 16:46:59 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/23 11:45:33 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	ft_atol(char *str)
 	return (res * sign);
 }
 
-int	starts_data(char **av, t_initial_data *data)
+int	starts_data(char **av, t_table *data)
 {
 	data->number_coders = atoi(av[0]);
 	data->time_burnout = atoi(av[1]);
@@ -80,9 +80,9 @@ int	starts_data(char **av, t_initial_data *data)
 	return (1);
 }
 
-t_initial_data	*parsing(char **av)
+t_table	*parsing(char **av)
 {
-	t_initial_data	*data;
+	t_table	*data;
 	int				count;
 	long			value;
 
@@ -99,11 +99,10 @@ t_initial_data	*parsing(char **av)
 		else
 			return (NULL);
 	}
-	data = malloc(sizeof(t_initial_data));
+	data = malloc(sizeof(t_table));
 	if (!data)
 		return (NULL);
 	if (!starts_data(av, data))
 		return (free(data), NULL);
-	display_initial_data(data);
 	return (data);
 }

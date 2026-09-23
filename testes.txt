@@ -1,0 +1,2 @@
+VALGRIND
+-valgrind ./codexion 12 12222 12222 12222 3444 5666 111 fifo
