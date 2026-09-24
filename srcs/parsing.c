@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:00:37 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/23 11:45:33 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/24 14:15:40 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	starts_data(char **av, t_table *data)
 	data->time_refactor = atoi(av[4]);
 	data->compiles_required = atoi(av[5]);
 	data->dongle_cooldown = atoi(av[6]);
+	data->start_time = current_time_ms();
 	if (strcmp(av[7], "fifo") == 0)
 		data->scheduler = FIFO;
 	else if (strcmp(av[7], "edf") == 0)

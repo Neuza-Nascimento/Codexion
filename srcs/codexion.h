@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:04:41 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/23 11:58:08 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/24 17:48:03 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 enum					e_scheduler
 {
@@ -37,6 +39,7 @@ typedef struct s_dongle
 {
 	int					id;
 	int					is_busy;
+	pthread_mutex_t		mutex;
 }						t_dongle;
 
 typedef struct s_coder
@@ -62,14 +65,23 @@ typedef struct s_table
 	int					time_refactor;
 	int					compiles_required;
 	int					dongle_cooldown;
+	int					simulation_over;
+	int					current_coder;
+	long				start_time;
 	enum e_scheduler	scheduler;
+	pthread_mutex_t		log_mutex;
+	pthread_mutex_t		stop_mutex;
 	t_dongle			*dongles;
 	t_coder				*coders;
-
 }						t_table;
 
 t_table					*parsing(char **av);
-int	iniciate_table(t_table *table);
-void print_table(t_table *data);
+int						iniciate_table(t_table *table);
+void					print_table(t_table *data);
+long					current_time_ms(void);
+long					get_timestamp_ms(long start_time);
+void					iniciate_simulation(t_table *table);
+void					log_state(int id, char *message, t_table *table);
+void					*coder_routine(void *arg);
 
 #endif

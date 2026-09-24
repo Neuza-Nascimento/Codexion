@@ -6,11 +6,21 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 15:59:09 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/23 12:04:31 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/24 17:17:31 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../codexion.h"
+
+void	log_state(int id, char *message, t_table *table)
+{
+	long time;
+	
+	pthread_mutex_lock(&table->log_mutex);
+	time = get_timestamp_ms(table->start_time);
+	printf (" %ld %i %s\n", time, id, message);
+	pthread_mutex_unlock(&table->log_mutex);
+}
 
 void	print_table(t_table *table)
 {
@@ -27,8 +37,9 @@ void	print_table(t_table *table)
 	printf("time_compile:     %d\n", table->time_compile);
 	printf("time_debug:       %d\n", table->time_debug);
 	printf("time_refactor:    %d\n", table->time_refactor);
-	printf("compiles_required: %d\n",table->compiles_required);
+	printf("compiles_required: %d\n", table->compiles_required);
 	printf("dongle_cooldown:  %d\n", table->dongle_cooldown);
+	printf("time_start:       %ld\n", table->start_time);
 	printf("scheduler:        %d\n", table->scheduler);
 	printf("\n---------- DONGLES ----------\n");
 	i = 0;
@@ -49,7 +60,8 @@ void	print_table(t_table *table)
 		printf("  last_compile_start:  %d\n",
 			table->coders[i].last_compile_start);
 		printf("  dongle_left:         %d\n", table->coders[i].dongle_left->id);
-		printf("  dongle_right:        %d\n", table->coders[i].dongle_rigth->id);
+		printf("  dongle_right:        %d\n",
+			table->coders[i].dongle_rigth->id);
 		printf("  holds_left:          %d\n", table->coders[i].holds_left);
 		printf("  holds_right:         %d\n", table->coders[i].holds_rigth);
 		printf("  compiles_done:       %d\n", table->coders[i].compiles_done);
