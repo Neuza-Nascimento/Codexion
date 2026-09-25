@@ -1,2 +1,4 @@
 VALGRIND
 -valgrind ./codexion 12 12222 12222 12222 3444 5666 111 fifo
+
+valgrind --tool=helgrind ./codexion 2 800 100 100 100 100 2 fifo

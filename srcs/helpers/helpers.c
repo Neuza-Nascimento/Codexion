@@ -6,20 +6,32 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 15:59:09 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/24 17:17:31 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/25 14:58:58 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
 
-void	log_state(int id, char *message, t_table *table)
+t_dongle	*large_dongle(t_dongle *d1, t_dongle *d2)
 {
-	long time;
-	
-	pthread_mutex_lock(&table->log_mutex);
-	time = get_timestamp_ms(table->start_time);
-	printf (" %ld %i %s\n", time, id, message);
-	pthread_mutex_unlock(&table->log_mutex);
+	if (d1->id < d2->id)
+		return (d2);
+	return (d1);
+}
+
+t_dongle	*smallest_dongle(t_dongle *d1, t_dongle *d2)
+{
+	if (d1->id > d2->id)
+		return (d2);
+	return (d1);
+}
+
+long	current_time_ms(void)
+{
+	struct timeval	temp;
+
+	gettimeofday(&temp, NULL);
+	return (long)((temp.tv_sec * 1000) + (temp.tv_usec / 1000));
 }
 
 void	print_table(t_table *table)

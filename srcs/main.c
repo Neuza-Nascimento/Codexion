@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   codexion.c                                         :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:03:58 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/24 17:04:08 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/25 14:39:18 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	main(int ac, char **av)
 	if (!iniciate_table(table))
 		return (free(table->coders), free(table->dongles), free(table),
 			display_error());
-	iniciate_simulation(table);
+	simulation(table);
+	//print_table(table);
 	return (free(table->coders), free(table->dongles), free(table), 0);
 }

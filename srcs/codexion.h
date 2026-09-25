@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:04:41 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/24 17:48:03 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/25 14:40:02 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ typedef struct s_dongle
 	pthread_mutex_t		mutex;
 }						t_dongle;
 
+typedef struct s_table	t_table;
+
 typedef struct s_coder
 {
 	int					id;
@@ -53,6 +55,7 @@ typedef struct s_coder
 	int					holds_rigth;
 	int					compiles_done;
 	pthread_t			thread;
+	t_table				*table;
 
 }						t_coder;
 
@@ -76,11 +79,12 @@ typedef struct s_table
 }						t_table;
 
 t_table					*parsing(char **av);
+t_dongle				*smallest_dongle(t_dongle *d1, t_dongle *d2);
+t_dongle				*large_dongle(t_dongle *d1, t_dongle *d2);
 int						iniciate_table(t_table *table);
 void					print_table(t_table *data);
 long					current_time_ms(void);
-long					get_timestamp_ms(long start_time);
-void					iniciate_simulation(t_table *table);
+void					simulation(t_table *table);
 void					log_state(int id, char *message, t_table *table);
 void					*coder_routine(void *arg);
 
