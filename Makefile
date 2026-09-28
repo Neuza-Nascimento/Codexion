@@ -18,7 +18,8 @@ FLAGS = -Wall -Wextra -Werror
 
 HEADER = codexion.h
 
-SOURCES = srcs/parsing.c srcs/helpers/helpers.c srcs/main.c srcs/init_coders.c srcs/simulation.c
+SOURCES = srcs/parsing.c srcs/helpers/helpers.c srcs/helpers/helpers_parsing.c srcs/main.c \
+		  srcs/init.c srcs/simulation.c
 
 OBJS = $(SOURCES:.c=.o)
 

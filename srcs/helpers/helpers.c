@@ -34,6 +34,16 @@ long	current_time_ms(void)
 	return (long)((temp.tv_sec * 1000) + (temp.tv_usec / 1000));
 }
 
+void	log_state(int id, char *message, t_table *table)
+{
+	long	time;
+
+	pthread_mutex_lock(&table->log_mutex);
+	time = current_time_ms() - table->start_time;
+	printf(" %ld %i %s\n", time, id, message);
+	pthread_mutex_unlock(&table->log_mutex);
+}
+
 void	print_table(t_table *table)
 {
 	int	i;

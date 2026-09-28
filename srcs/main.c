@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/14 11:03:58 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/25 14:39:18 by nedo-nas         ###   ########.fr       */
+/*   Created: 2026/09/28 13:31:12 by nedo-nas          #+#    #+#             */
+/*   Updated: 2026/09/28 13:31:12 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,21 @@
 int	display_error(void)
 {
 	fprintf(stderr, "ERROR: invalid arguments \n");
-	fprintf(stderr,
-		"Usage: number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler\n");
 	return (1);
 }
 
 int	main(int ac, char **av)
 {
-	t_table	*table;
+	t_table	table;
 
 	if (ac != 9)
 		return (display_error());
-	table = parsing(av + 1);
-	if (!table)
+	if (!parsing(&table, av + 1))
 		return (display_error());
-	if (!iniciate_table(table))
-		return (free(table->coders), free(table->dongles), free(table),
-			display_error());
-	simulation(table);
-	//print_table(table);
-	return (free(table->coders), free(table->dongles), free(table), 0);
+	if (!iniciate_table(&table))
+		return (free(table.coders), free(table.dongles), display_error());
+	if (!simulation(&table))
+		return (free(table.coders), free(table.dongles), display_error());
+	destroy_mutexes(&table);
+	return (free(table.coders), free(table.dongles), 0);
 }

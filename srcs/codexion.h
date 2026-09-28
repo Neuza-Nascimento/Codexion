@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/14 11:04:41 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/25 14:40:02 by nedo-nas         ###   ########.fr       */
+/*   Created: 2026/09/28 18:09:53 by nedo-nas          #+#    #+#             */
+/*   Updated: 2026/09/28 18:09:53 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-enum					e_scheduler
+enum e_scheduler
 {
 	EDF,
 	FIFO,
 };
 
-enum					e_state
+enum e_state
 {
 	TAKING_DONGLE,
 	COMPILING,
@@ -37,27 +37,28 @@ enum					e_state
 
 typedef struct s_dongle
 {
-	int					id;
-	int					is_busy;
-	pthread_mutex_t		mutex;
-}						t_dongle;
+	int				id;
+	int				is_busy;
+	long			available_at;
+	pthread_mutex_t	mutex;
+}	t_dongle;
 
 typedef struct s_table	t_table;
 
 typedef struct s_coder
 {
-	int					id;
-	enum e_state		status;
-	int					last_compile_start;
-	t_dongle			*dongle_left;
-	t_dongle			*dongle_rigth;
-	int					holds_left;
-	int					holds_rigth;
-	int					compiles_done;
-	pthread_t			thread;
-	t_table				*table;
+	int				id;
+	enum e_state	status;
+	int				last_compile_start;
+	t_dongle		*dongle_left;
+	t_dongle		*dongle_rigth;
+	int				holds_left;
+	int				holds_rigth;
+	int				compiles_done;
+	pthread_t		thread;
+	t_table			*table;
 
-}						t_coder;
+}	t_coder;
 
 typedef struct s_table
 {
@@ -76,16 +77,21 @@ typedef struct s_table
 	pthread_mutex_t		stop_mutex;
 	t_dongle			*dongles;
 	t_coder				*coders;
-}						t_table;
+}	t_table;
 
-t_table					*parsing(char **av);
-t_dongle				*smallest_dongle(t_dongle *d1, t_dongle *d2);
-t_dongle				*large_dongle(t_dongle *d1, t_dongle *d2);
-int						iniciate_table(t_table *table);
-void					print_table(t_table *data);
-long					current_time_ms(void);
-void					simulation(t_table *table);
-void					log_state(int id, char *message, t_table *table);
-void					*coder_routine(void *arg);
+int			parsing(t_table *table, char **av);
+t_dongle	*smallest_dongle(t_dongle *d1, t_dongle *d2);
+t_dongle	*large_dongle(t_dongle *d1, t_dongle *d2);
+
+int		is_integer(long number);
+int		is_valid_number(char *av);
+int		ft_atol(char *str);
+int		iniciate_table(t_table *table);
+int		simulation(t_table *table);
+long	current_time_ms(void);
+void	print_table(t_table *data);
+void	log_state(int id, char *message, t_table *table);
+void	*coder_routine(void *arg);
+void	destroy_mutexes(t_table *table);
 
 #endif
