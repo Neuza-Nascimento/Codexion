@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   helpers.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/22 15:59:09 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/09/25 14:58:58 by nedo-nas         ###   ########.fr       */
+/*                                                       :::      ::::::::    */
+/*   helpers.c                                         :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/09/22 15:59:09 by username         #+#    #+#              */
+/*   Updated: 2026/09/29 14:12:20 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,18 @@ void	log_state(int id, char *message, t_table *table)
 
 	pthread_mutex_lock(&table->log_mutex);
 	time = current_time_ms() - table->start_time;
-	printf(" %ld %i %s\n", time, id, message);
+	printf("%ld %i %s\n", time, id, message);
 	pthread_mutex_unlock(&table->log_mutex);
+}
+
+int	simulation_over(t_table *table)
+{
+	int	value;
+
+	pthread_mutex_lock(&table->stop_mutex);
+	value = table->simulation_finish;
+	pthread_mutex_unlock(&table->stop_mutex);
+	return (value);
 }
 
 void	print_table(t_table *table)
@@ -79,7 +89,7 @@ void	print_table(t_table *table)
 		printf("Coder [%d]\n", i);
 		printf("  id:                  %d\n", table->coders[i].id);
 		printf("  status:              %d\n", table->coders[i].status);
-		printf("  last_compile_start:  %d\n",
+		printf("  last_compile_start:  %ld\n",
 			table->coders[i].last_compile_start);
 		printf("  dongle_left:         %d\n", table->coders[i].dongle_left->id);
 		printf("  dongle_right:        %d\n",

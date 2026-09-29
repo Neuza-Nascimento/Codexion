@@ -3,10 +3,10 @@
 /*                                                       :::      ::::::::    */
 /*   parsing.c                                         :+:      :+:    :+:    */
 /*                                                   +:+ +:+         +:+      */
-/*   By: nedo-nas <nedo-nas@student.42porto.co>    #+#  +:+       +#+         */
+/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/09/14 12:00:37 by nedo-nas         #+#    #+#              */
-/*   Updated: 2026/09/28 12:56:56 by nedo-nas        ###   ########.fr        */
+/*   Created: 2026/09/14 12:00:37 by username         #+#    #+#              */
+/*   Updated: 2026/09/29 14:12:57 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	starts_data(char **av, t_table *data)
 	data->time_refactor = atoi(av[4]);
 	data->compiles_required = atoi(av[5]);
 	data->dongle_cooldown = atoi(av[6]);
-	data->start_time = current_time_ms();
+	data->start_time = 0;
+	data->simulation_finish = 0;
 	pthread_mutex_init(&data->stop_mutex, NULL);
 	pthread_mutex_init(&data->log_mutex, NULL);
 	if (strcmp(av[7], "fifo") == 0)

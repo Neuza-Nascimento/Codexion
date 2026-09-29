@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       :::      ::::::::    */
-/*   init_coders.c                                     :+:      :+:    :+:    */
+/*   init.c                                            :+:      :+:    :+:    */
 /*                                                   +:+ +:+         +:+      */
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/23 10:38:31 by username         #+#    #+#              */
-/*   Updated: 2026/09/28 12:59:00 by username        ###   ########.fr        */
+/*   Updated: 2026/09/29 14:12:34 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	iniciate_dongles(t_table *table)
 	{
 		table->dongles[i].id = i + 1;
 		table->dongles[i].is_busy = 0;
+		table->dongles[i].available_at = current_time_ms();
 		pthread_mutex_init(&table->dongles[i].mutex, NULL);
 		i++;
 	}
@@ -48,14 +49,15 @@ int	iniciate_coders(t_table *table)
 		table->coders[i].id = i + 1;
 		table->coders[i].last_compile_start = 0;
 		table->coders[i].status = TAKING_DONGLE;
+		pthread_mutex_init(&table->coders[i].status_coder, NULL);
 		i++;
 	}
 	return (1);
 }
 
-void destroy_mutexes(t_table *table)
+void	destroy_mutexes(t_table *table)
 {
-	int i;
+	int	i;
 
 	pthread_mutex_destroy(&table->log_mutex);
 	pthread_mutex_destroy(&table->stop_mutex);
@@ -63,8 +65,9 @@ void destroy_mutexes(t_table *table)
 	while (i < table->number_coders)
 	{
 		pthread_mutex_destroy(&table->dongles[i].mutex);
-		i ++;
-	}	
+		pthread_mutex_destroy(&table->coders[i].status_coder);
+		i++;
+	}
 }
 
 int	iniciate_table(t_table *table)
