@@ -25,7 +25,12 @@ int	iniciate_dongles(t_table *table)
 		table->dongles[i].id = i + 1;
 		table->dongles[i].is_busy = 0;
 		table->dongles[i].available_at = current_time_ms();
+		table->dongles[i].len_requests = 0;
+		table->dongles[i].count_tickets = 0;
+   		table->dongles[i].requests[0] = NULL;
+		table->dongles[i].requests[1] = NULL;
 		pthread_mutex_init(&table->dongles[i].mutex, NULL);
+		pthread_cond_init(&table->dongles[i].cond, NULL);
 		i++;
 	}
 	return (1);

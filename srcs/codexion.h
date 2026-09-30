@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/28 18:09:53 by username         #+#    #+#              */
-/*   Updated: 2026/09/29 14:11:01 by username        ###   ########.fr        */
+/*   Updated: 2026/09/30 15:33:45 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,25 @@ enum e_state
 	DEAD,
 };
 
+typedef struct s_request
+{
+	int		id_coder;
+	int		ticket;
+	long	dealine;
+
+}	t_request;
+
 typedef struct s_dongle
 {
 	int				id;
 	int				is_busy;
 	long			available_at;
 	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
+	int				len_requests;
+	int				count_tickets;
+	t_request		*requests[2];
+
 }	t_dongle;
 
 typedef struct s_table	t_table;
@@ -56,6 +69,7 @@ typedef struct s_coder
 	t_dongle		*dongle_left;
 	t_dongle		*dongle_rigth;
 	pthread_t		thread;
+	pthread_cond_t	cond_coder;
 	pthread_mutex_t	status_coder;
 	t_table			*table;
 

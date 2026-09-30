@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/28 16:29:50 by username          #+#    #+#             */
-/*   Updated: 2026/09/29 14:12:02 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/09/30 15:46:17 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	try_take_dongle(t_dongle *dongle)
 	int	sucess;
 
 	sucess = 0;
+	
 	pthread_mutex_lock(&dongle->mutex);
 	if (dongle->is_busy == 0 && current_time_ms() >= dongle->available_at)
 	{
@@ -33,24 +34,68 @@ void	leave_dongle(t_dongle *dongle, long cooldown)
 	dongle->is_busy = 0;
 	dongle->available_at = current_time_ms() + cooldown;
 	pthread_mutex_unlock(&dongle->mutex);
+	pthread_cond_broadcast(&dongle->cond);
 }
 
-int	acquire_dongle(t_dongle *dongle, t_table *table)
+int	acquire_dongle(t_dongle *dongle, t_coder *coder)
 {
+	long	last_compile;
+	t_request   request;
+	
+	pthread_mutex_lock(&coder->status_coder);
+	request.id_coder = coder->id;
+	last_compile = 	coder->last_compile_start;
+	pthread_mutex_unlock(&coder->status_coder);
+	request.dealine = last_compile + coder->table->time_burnout;
+	pthread_mutex_lock(&dongle->mutex);
+	request.ticket = dongle->count_tickets;
+	dongle->count_tickets++;
+	add_request_on_heap(dongle, &request);
 	while (1)
 	{
-		if (simulation_over(table))
-			return (0);
-		if (try_take_dongle(dongle))
-			return (1);
-		usleep(100);
+		if (simulation_over(coder->table))
+		{
+			remove_request_on_heap(dongle, coder->id);
+			pthread_mutex_unlock(&dongle->mutex);	
+			return (0);	
+		}
+		else if (dongle->requests[0].id_coder != coder->id  ||  dongle->is_busy == 1)
+			pthread_cond_wait(&dongle->cond, &dongle->mutex);	
+		else
+			break;
 	}
+	remove_request_on_heap(dongle, coder->id);	
+	dongle->is_busy = 1;
+	pthread_mutex_unlock(&dongle->mutex);
+	return (1);
 }
 
-void	is_compiling(int id, t_table *table)
+int	is_compiling(t_coder *coder)
 {
-	log_state(id, "is compiling", table);
+	t_dongle	*large_dongl;
+	t_dongle	*small_dongl;
+	t_table		*table;
+	
+	table = coder->table;
+	large_dongl = large_dongle(coder->dongle_left, coder->dongle_rigth);
+	small_dongl = smallest_dongle(coder->dongle_left, coder->dongle_rigth);
+	if (!acquire_dongle(small_dongl, coder))
+		return (0);
+	log_state(coder->id, "has taken a dongle", table);
+	if (coder->dongle_left == coder->dongle_rigth)
+		return (0);
+	if (!acquire_dongle(large_dongl, coder))
+		return (leave_dongle(small_dongl, table->dongle_cooldown), 0);
+	log_state(coder->id, "has taken a dongle", table);
+	pthread_mutex_lock(&coder->status_coder);
+	coder->last_compile_start = current_time_ms();
+	pthread_mutex_unlock(&coder->status_coder);
+	log_state(coder->id, "is compiling", table);
 	usleep(table->time_compile * 1000);
+	coder->compiles_done++;
+	leave_dongle(small_dongl, table->dongle_cooldown);
+	leave_dongle(large_dongl, table->dongle_cooldown);
+	return (1);
 }
 
 void	is_debugging(int id, t_table *table)
@@ -69,30 +114,13 @@ void	*coder_routine(void *arg)
 {
 	t_coder		*coder;
 	t_table		*table;
-	t_dongle	*large_dongl;
-	t_dongle	*small_dongl;
 
 	coder = (t_coder *) arg;
 	table = coder->table;
 	while (!simulation_over(table))
 	{
-		large_dongl = large_dongle(coder->dongle_left, coder->dongle_rigth);
-		small_dongl = smallest_dongle(coder->dongle_left, coder->dongle_rigth);
-		if (!acquire_dongle(small_dongl, table))
+		if (!is_compiling(coder))
 			return (NULL);
-		log_state(coder->id, "has taken a dongle", table);
-		if (coder->dongle_left == coder->dongle_rigth)
-			return (NULL);
-		if (!acquire_dongle(large_dongl, table))
-			return (leave_dongle(small_dongl, table->dongle_cooldown), NULL);
-		log_state(coder->id, "has taken a dongle", table);
-		pthread_mutex_lock(&coder->status_coder);
-		coder->last_compile_start = current_time_ms();
-		pthread_mutex_unlock(&coder->status_coder);
-		is_compiling(coder->id, table);
-		coder->compiles_done++;
-		leave_dongle(small_dongl, table->dongle_cooldown);
-		leave_dongle(large_dongl, table->dongle_cooldown);
 		is_debugging(coder->id, table);
 		is_refactoring(coder->id, table);
 	}
