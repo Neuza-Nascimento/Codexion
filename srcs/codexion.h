@@ -98,6 +98,10 @@ typedef struct s_table
 t_dongle	*smallest_dongle(t_dongle *d1, t_dongle *d2);
 t_dongle	*large_dongle(t_dongle *d1, t_dongle *d2);
 
+void	push_request(t_dongle *dongle, t_request *new_request, t_table *table);
+void	remove_top(t_dongle *dongle, t_table *table);
+
+
 int		parsing(t_table *table, char **av);
 int		is_integer(long number);
 int		is_valid_number(char *av);
