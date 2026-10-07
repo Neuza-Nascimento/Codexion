@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/28 16:29:50 by username          #+#    #+#             */
-/*   Updated: 2026/10/01 11:11:22 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/07 15:14:04 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,73 +17,102 @@ void	leave_dongle(t_dongle *dongle, long cooldown)
 	pthread_mutex_lock(&dongle->mutex);
 	dongle->is_busy = 0;
 	dongle->available_at = current_time_ms() + cooldown;
-	pthread_cond_signal(&dongle->cond);
+	pthread_cond_broadcast(&dongle->cond);
 	pthread_mutex_unlock(&dongle->mutex);
 
 }
 
-int	acquire_dongle(t_dongle *dongle, t_coder *coder)
+void verify_await(t_dongle *dongle, t_coder *coder)
 {
-	long		last_compile;
-	t_request	request;
+	long time;
+	struct timespec time_f;
+	
 
-	pthread_mutex_lock(&coder->status_coder);
-	request.id_coder = coder->id;
-	last_compile = coder->last_compile_start;
-	pthread_mutex_unlock(&coder->status_coder);
-	request.dealine = last_compile + coder->table->time_burnout;
-	pthread_mutex_lock(&dongle->mutex);
-	request.ticket = dongle->count_tickets;
-	dongle->count_tickets++;
-	push_request(dongle, &request, coder->table);
+	if (simulation_over(coder->table))
+	{
+		pthread_mutex_unlock(&dongle->mutex);
+		return ;
+	}
+	else if (coder->id != dongle->requests[0].id_coder || dongle->is_busy == 1)
+		pthread_cond_wait(&dongle->cond, &dongle->mutex);
+	else if (coder->id == dongle->requests[0].id_coder && dongle->is_busy == 0 && current_time_ms() < dongle->available_at)
+	{
+		time = dongle->available_at - current_time_ms();
+		time_f = future_time(time);
+		pthread_cond_timedwait(&dongle->cond, &dongle->mutex, &time_f);
+	}
+	pthread_mutex_unlock(&dongle->mutex);
+}
+
+int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
+{
 	while (1)
 	{
+		pthread_mutex_lock(&dongle1->mutex);
+		pthread_mutex_lock(&dongle2->mutex);
 		if (simulation_over(coder->table))
 		{
-			remove_top(dongle, coder->table);
-			pthread_mutex_unlock(&dongle->mutex);
+			pthread_mutex_unlock(&dongle1->mutex);
+			pthread_mutex_unlock(&dongle2->mutex);
 			return (0);
 		}
-		else if (dongle->requests[0]->id_coder != coder->id || dongle->is_busy == 1)
-			pthread_cond_wait(&dongle->cond, &dongle->mutex);
-		else if (dongle->requests[0]->id_coder != coder->id && dongle->is_busy == 0 && current_time_ms() < dongle->available_at)
-			usleep(2000);
-		else
-			break ;
+		if (dongle_ok(dongle1, coder) && dongle_ok(dongle2, coder))
+		{
+			remove_top(dongle2, coder->table);
+			remove_top(dongle1, coder->table);
+			dongle1->is_busy = 1;
+			dongle2->is_busy = 1;
+			log_state(coder->id, "has taken a dongle", coder->table);
+			log_state(coder->id, "has taken a dongle", coder->table);
+			break;
+		}
+		else 
+		{
+			if (!dongle_ok(dongle1, coder))
+			{
+				pthread_mutex_unlock(&dongle2->mutex);
+				verify_await(dongle1, coder);
+			}
+			else
+			{
+				pthread_mutex_unlock(&dongle1->mutex);
+				verify_await(dongle2, coder);	
+			}		
+		}
 	}
-	remove_top(dongle, coder->table);
-	dongle->is_busy = 1;
-	pthread_mutex_unlock(&dongle->mutex);
+	pthread_mutex_unlock(&dongle1->mutex);
+	pthread_mutex_unlock(&dongle2->mutex);
 	return (1);
 }
 
 int	is_compiling(t_coder *coder)
 {
-	t_dongle	*large_dongl;
-	t_dongle	*small_dongl;
-	t_table		*table;
+	t_table  *table;
+	t_dongle *small_dongl;
+	t_dongle *large_dongl;
 
 	table = coder->table;
-	large_dongl = large_dongle(coder->dongle_left, coder->dongle_rigth);
 	small_dongl = smallest_dongle(coder->dongle_left, coder->dongle_rigth);
-	if (!acquire_dongle(small_dongl, coder))
-		return (0);
-	log_state(coder->id, "has taken a dongle", table);
+	large_dongl = large_dongle(coder->dongle_left, coder->dongle_rigth);
 	if (coder->dongle_left == coder->dongle_rigth)
+	{
+		log_state(coder->id, "has taken a dongle", table);
 		return (0);
-	if (!acquire_dongle(large_dongl, coder))
-		return (leave_dongle(small_dongl, table->dongle_cooldown), 0);
-	log_state(coder->id, "has taken a dongle", table);
+	}
+	create_request(small_dongl, coder);
+	create_request(large_dongl, coder);
+	if (!acquire_dongles(small_dongl, large_dongl, coder))
+		return (0);
 	pthread_mutex_lock(&coder->status_coder);
 	coder->last_compile_start = current_time_ms();
 	pthread_mutex_unlock(&coder->status_coder);
 	log_state(coder->id, "is compiling", table);
 	usleep(table->time_compile * 1000);
+	leave_dongle(small_dongl, table->dongle_cooldown);
+	leave_dongle(large_dongl, table->dongle_cooldown);
 	pthread_mutex_lock(&coder->status_coder);
 	coder->compiles_done++;
 	pthread_mutex_unlock(&coder->status_coder);
-	leave_dongle(small_dongl, table->dongle_cooldown);
-	leave_dongle(large_dongl, table->dongle_cooldown);
 	return (1);
 }
 

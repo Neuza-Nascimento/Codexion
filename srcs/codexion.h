@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/28 18:09:53 by username         #+#    #+#              */
-/*   Updated: 2026/09/30 15:33:45 by username        ###   ########.fr        */
+/*   Updated: 2026/10/07 13:20:31 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_dongle
 	pthread_cond_t	cond;
 	int				len_requests;
 	int				count_tickets;
-	t_request		*requests[2];
+	t_request		requests[2];
 
 }	t_dongle;
 
@@ -98,10 +98,12 @@ typedef struct s_table
 t_dongle	*smallest_dongle(t_dongle *d1, t_dongle *d2);
 t_dongle	*large_dongle(t_dongle *d1, t_dongle *d2);
 
-void	push_request(t_dongle *dongle, t_request *new_request, t_table *table);
-void	remove_top(t_dongle *dongle, t_table *table);
+void			push_request(t_dongle *dongle, t_request *new_request, t_table *table);
+void			remove_top(t_dongle *dongle, t_table *table);
+struct timespec	future_time(long time_in_ms);
+void			create_request(t_dongle *dongle, t_coder *coder);
 
-
+int		dongle_ok(t_dongle *dongle, t_coder *coder);
 int		parsing(t_table *table, char **av);
 int		is_integer(long number);
 int		is_valid_number(char *av);

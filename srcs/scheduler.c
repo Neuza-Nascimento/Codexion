@@ -6,19 +6,19 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 11:26:58 by username          #+#    #+#             */
-/*   Updated: 2026/10/01 10:46:04 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/07 14:46:19 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	ft_swap(t_request **frist, t_request **second)
+void	ft_swap(t_request *frist, t_request *second)
 {
 	t_request	*temp;
 
-	temp = *frist;
-	*frist = *second;
-	*second = temp;
+	temp = frist;
+	frist = second;
+	second = temp;
 }
 
 int	has_priority(t_request *request1, t_request *request2, t_table *table)
@@ -43,12 +43,12 @@ void	push_request(t_dongle *dongle, t_request *new_request, t_table *table)
 	int	parent;
 
 	pos = dongle->len_requests;
-	dongle->requests[pos] = new_request;
+	dongle->requests[pos] = *new_request;
 	pos = dongle->len_requests++;
 	while (pos > 0)
 	{
 		parent = (pos - 1) / 2;
-		if (has_priority(dongle->requests[pos], dongle->requests[parent], table))
+		if (has_priority(&dongle->requests[pos], &dongle->requests[parent], table))
 		{
 			ft_swap(&dongle->requests[pos], &dongle->requests[parent]);
 			pos = parent;
@@ -69,15 +69,15 @@ int	the_best_child(t_dongle *dongle, int pos, t_table *table)
 	best = left;
 	if (right >= dongle->len_requests)
 		return (best);
-	if (has_priority(dongle->requests[right], dongle->requests[left], table))
+	if (has_priority(&dongle->requests[right], &dongle->requests[left], table))
 		best = right;
 	return (best);
 }
 
 void	remove_top(t_dongle *dongle, t_table *table)
 {
-	int			pos;
-	int			best;
+	int	pos;
+	int	best;
 
 	if (dongle->len_requests == 0)
 		return ;
@@ -87,7 +87,7 @@ void	remove_top(t_dongle *dongle, t_table *table)
 	while ((2 * pos) + 1 < dongle->len_requests)
 	{
 		best = the_best_child(dongle, pos, table);
-		if (has_priority(dongle->requests[best], dongle->requests[pos], table))
+		if (has_priority(&dongle->requests[best], &dongle->requests[pos], table))
 		{
 			ft_swap(&dongle->requests[pos], &dongle->requests[best]);
 			pos = best;
@@ -95,4 +95,21 @@ void	remove_top(t_dongle *dongle, t_table *table)
 		else
 			break ;
 	}
+}
+
+void	create_request(t_dongle *dongle, t_coder *coder)
+{
+	t_request	request;
+	long		last_compile;
+
+	pthread_mutex_lock(&coder->status_coder);
+	request.id_coder = coder->id;
+	last_compile = coder->last_compile_start;
+	pthread_mutex_unlock(&coder->status_coder);
+	request.dealine = last_compile + coder->table->time_burnout;
+	pthread_mutex_lock(&dongle->mutex);
+	request.ticket = dongle->count_tickets;
+	dongle->count_tickets++;
+	push_request(dongle, &request, coder->table);
+	pthread_mutex_unlock(&dongle->mutex);
 }
