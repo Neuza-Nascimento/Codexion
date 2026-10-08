@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/23 10:38:31 by username         #+#    #+#              */
-/*   Updated: 2026/09/29 14:12:34 by username        ###   ########.fr        */
+/*   Updated: 2026/10/08 11:59:09 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	iniciate_dongles(t_table *table)
 		table->dongles[i].is_busy = 0;
 		table->dongles[i].available_at = current_time_ms();
 		table->dongles[i].len_requests = 0;
-		table->dongles[i].count_tickets = 0;
 		pthread_mutex_init(&table->dongles[i].mutex, NULL);
 		pthread_cond_init(&table->dongles[i].cond, NULL);
 		i++;

@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/28 18:09:53 by username         #+#    #+#              */
-/*   Updated: 2026/10/07 13:20:31 by username        ###   ########.fr        */
+/*   Updated: 2026/10/08 11:58:50 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ typedef struct s_dongle
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
 	int				len_requests;
-	int				count_tickets;
 	t_request		requests[2];
 
 }	t_dongle;
@@ -85,7 +84,7 @@ typedef struct s_table
 	int					compiles_required;
 	int					dongle_cooldown;
 	int					simulation_finish;
-	int					current_coder;
+	int					count_tickets;
 	long				start_time;
 	enum e_scheduler	scheduler;
 	pthread_mutex_t		log_mutex;
@@ -101,9 +100,12 @@ t_dongle	*large_dongle(t_dongle *d1, t_dongle *d2);
 void			push_request(t_dongle *dongle, t_request *new_request, t_table *table);
 void			remove_top(t_dongle *dongle, t_table *table);
 struct timespec	future_time(long time_in_ms);
-void			create_request(t_dongle *dongle, t_coder *coder);
+void			create_request(t_dongle *dongle, t_coder *coder, t_request *request);
 
-int		dongle_ok(t_dongle *dongle, t_coder *coder);
+void 	iniciate_request(t_coder *coder, t_table *table, t_dongle *dongle1, t_dongle *dongle2);
+void	leave_dongle(t_dongle *dongle, long cooldown);
+int		acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder);
+
 int		parsing(t_table *table, char **av);
 int		is_integer(long number);
 int		is_valid_number(char *av);
@@ -112,7 +114,6 @@ int		iniciate_table(t_table *table);
 int		simulation(t_table *table);
 int		simulation_over(t_table *table);
 long	current_time_ms(void);
-void	print_table(t_table *data);
 void	log_state(int id, char *message, t_table *table);
 void	*coder_routine(void *arg);
 void	*monitor_routine(void *arg);

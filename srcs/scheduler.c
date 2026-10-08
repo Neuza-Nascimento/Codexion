@@ -6,11 +6,26 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 11:26:58 by username          #+#    #+#             */
-/*   Updated: 2026/10/07 14:46:19 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/08 12:58:01 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+
+#include <stdio.h>
+#include <pthread.h>
+
+int	read_dongle_request(t_request *request, int id)
+{
+	printf("[DONGLE %d] Request: coder=%d ticket=%d deadline=%ld\n",
+		id,
+		request->id_coder,
+		request->ticket,
+		request->dealine);
+
+	return (0);
+}
 
 void	ft_swap(t_request *frist, t_request *second)
 {
@@ -56,6 +71,11 @@ void	push_request(t_dongle *dongle, t_request *new_request, t_table *table)
 		else
 			break ;
 	}
+	// int i = -1;
+	// while (++i < dongle->len_requests)
+	// {
+	// 	read_dongle_request(&dongle->requests[i], dongle->id);
+	// }
 }
 
 int	the_best_child(t_dongle *dongle, int pos, t_table *table)
@@ -97,19 +117,9 @@ void	remove_top(t_dongle *dongle, t_table *table)
 	}
 }
 
-void	create_request(t_dongle *dongle, t_coder *coder)
+void	create_request(t_dongle *dongle, t_coder *coder, t_request *request)
 {
-	t_request	request;
-	long		last_compile;
-
-	pthread_mutex_lock(&coder->status_coder);
-	request.id_coder = coder->id;
-	last_compile = coder->last_compile_start;
-	pthread_mutex_unlock(&coder->status_coder);
-	request.dealine = last_compile + coder->table->time_burnout;
 	pthread_mutex_lock(&dongle->mutex);
-	request.ticket = dongle->count_tickets;
-	dongle->count_tickets++;
-	push_request(dongle, &request, coder->table);
+	push_request(dongle, request, coder->table);
 	pthread_mutex_unlock(&dongle->mutex);
 }

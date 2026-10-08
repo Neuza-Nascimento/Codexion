@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/22 15:59:09 by username         #+#    #+#              */
-/*   Updated: 2026/09/29 14:12:20 by username        ###   ########.fr        */
+/*   Updated: 2026/10/08 11:57:48 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,17 @@ long	current_time_ms(void)
 	return (long)((temp.tv_sec * 1000) + (temp.tv_usec / 1000));
 }
 
-
-struct timespec future_time(long time_in_ms)
+struct timespec	future_time(long time_in_ms)
 {
-    struct timespec abstime;
-    long future_time_ms;
+	struct timespec	abstime;
+	long			future_time_ms;
 
 	future_time_ms = current_time_ms() + time_in_ms;
-    abstime.tv_sec = future_time_ms / 1000;
-	abstime.tv_nsec = (future_time_ms % 1000) * 1000000; 
+	abstime.tv_sec = future_time_ms / 1000;
+	abstime.tv_nsec = (future_time_ms % 1000) * 1000000;
 	return (abstime);
 }
+
 void	log_state(int id, char *message, t_table *table)
 {
 	long	time;

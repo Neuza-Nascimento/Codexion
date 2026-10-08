@@ -23,6 +23,7 @@ int	starts_data(char **av, t_table *data)
 	data->dongle_cooldown = atoi(av[6]);
 	data->start_time = 0;
 	data->simulation_finish = 0;
+	data->count_tickets = 0;
 	pthread_mutex_init(&data->stop_mutex, NULL);
 	pthread_mutex_init(&data->log_mutex, NULL);
 	if (strcmp(av[7], "fifo") == 0)

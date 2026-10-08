@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 10:55:29 by username          #+#    #+#             */
-/*   Updated: 2026/10/01 11:07:18 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/08 11:59:47 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	stop_simulation(t_table *table)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	pthread_mutex_lock(&table->stop_mutex);
@@ -24,8 +24,8 @@ void	stop_simulation(t_table *table)
 	{
 		pthread_mutex_lock(&table->dongles[i].mutex);
 		pthread_cond_broadcast(&table->dongles[i].cond);
-		pthread_mutex_unlock(&table->dongles[i].mutex);	
-		i ++;
+		pthread_mutex_unlock(&table->dongles[i].mutex);
+		i++;
 	}
 }
 

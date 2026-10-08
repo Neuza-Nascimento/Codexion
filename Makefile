@@ -12,14 +12,14 @@
 
 NAME = codexion
 
-CC = gcc -g -pthread
+CC = gcc -g 
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -pthread
 
 HEADER = codexion.h
 
-SOURCES = srcs/parsing.c srcs/helpers/helpers.c srcs/helpers/helpers_parsing.c srcs/main.c \
-		  srcs/init.c srcs/simulation.c srcs/monitor.c srcs/coder.c srcs/scheduler.c srcs/helpers/helpers_scheduler.c
+SOURCES = srcs/parsing.c srcs/helpers/utils.c srcs/helpers/utils_parsing.c srcs/main.c \
+		  srcs/init.c srcs/simulation.c srcs/monitor.c srcs/coder.c srcs/scheduler.c srcs/helpers/utils_coder.c
 
 OBJS = $(SOURCES:.c=.o)
 
