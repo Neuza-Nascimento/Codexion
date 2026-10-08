@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 11:26:58 by username          #+#    #+#             */
-/*   Updated: 2026/10/08 12:58:01 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/08 14:58:19 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,26 @@
 #include <stdio.h>
 #include <pthread.h>
 
-int	read_dongle_request(t_request *request, int id)
+int	read_dongle_request(int id, int len, int idl)
 {
-	printf("[DONGLE %d] Request: coder=%d ticket=%d deadline=%ld\n",
-		id,
-		request->id_coder,
-		request->ticket,
-		request->dealine);
+	// printf("[DONGLE %d] Request: coder=%d ticket=%d deadline=%ld\n",
+	// 	id,
+	// 	request->id_coder,
+	// 	request->ticket,
+	// 	request->dealine);
+
+	printf("[DONGLE %d] Request-len: %d\n, id primeiro: %d\n", id, len, idl);
 
 	return (0);
 }
 
 void	ft_swap(t_request *frist, t_request *second)
 {
-	t_request	*temp;
+	t_request	temp;
 
-	temp = frist;
-	frist = second;
-	second = temp;
+	temp = *frist;
+	*frist = *second;
+	*second = temp;
 }
 
 int	has_priority(t_request *request1, t_request *request2, t_table *table)
@@ -71,11 +73,11 @@ void	push_request(t_dongle *dongle, t_request *new_request, t_table *table)
 		else
 			break ;
 	}
-	// int i = -1;
-	// while (++i < dongle->len_requests)
-	// {
-	// 	read_dongle_request(&dongle->requests[i], dongle->id);
-	// }
+	int i = -1;
+	while (++i < dongle->len_requests)
+	{
+		read_dongle_request(dongle->id, dongle->len_requests, dongle->requests[0].id_coder);
+	}
 }
 
 int	the_best_child(t_dongle *dongle, int pos, t_table *table)
@@ -93,7 +95,19 @@ int	the_best_child(t_dongle *dongle, int pos, t_table *table)
 		best = right;
 	return (best);
 }
+void	remove_by_id(t_dongle *dongle, t_table *table, int id)
+{
+	int	pos;
+	int	best;
+	int i;
 
+	if (dongle->len_requests == 0)
+		return ;
+	while (dongle->requests[i].id_coder != id && i < dongle->len_requests)
+		i ++;
+	ft_swap(&dongle->requests[0], &dongle->requests[i]);
+	remove_top(dongle, table);
+}
 void	remove_top(t_dongle *dongle, t_table *table)
 {
 	int	pos;
@@ -119,7 +133,5 @@ void	remove_top(t_dongle *dongle, t_table *table)
 
 void	create_request(t_dongle *dongle, t_coder *coder, t_request *request)
 {
-	pthread_mutex_lock(&dongle->mutex);
 	push_request(dongle, request, coder->table);
-	pthread_mutex_unlock(&dongle->mutex);
 }

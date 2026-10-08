@@ -102,7 +102,7 @@ void			remove_top(t_dongle *dongle, t_table *table);
 struct timespec	future_time(long time_in_ms);
 void			create_request(t_dongle *dongle, t_coder *coder, t_request *request);
 
-void 	iniciate_request(t_coder *coder, t_table *table, t_dongle *dongle1, t_dongle *dongle2);
+void	iniciate_request(t_coder *coder, int ticket, long deadline, t_dongle *dongle1, t_dongle *dongle2);
 void	leave_dongle(t_dongle *dongle, long cooldown);
 int		acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder);
 

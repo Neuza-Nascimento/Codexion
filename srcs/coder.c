@@ -6,27 +6,20 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/28 16:29:50 by username          #+#    #+#             */
-/*   Updated: 2026/10/08 12:58:36 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/08 14:41:55 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void iniciate_request(t_coder *coder, t_table *table, t_dongle *dongle1, t_dongle *dongle2)
+void iniciate_request(t_coder *coder, int ticket, long deadline, t_dongle *dongle1, t_dongle *dongle2)
 {
 	t_request request;
-	int		  ticket;
-	int		  last_compile;
-	
-	pthread_mutex_lock(&table->log_mutex);
-	ticket = table->count_tickets;
-	table->count_tickets ++;
-	pthread_mutex_unlock(&table->log_mutex);
+
 	pthread_mutex_lock(&coder->status_coder);
 	request.id_coder = coder->id;
-	last_compile = coder->last_compile_start;
 	pthread_mutex_unlock(&coder->status_coder);
-	request.dealine = last_compile + coder->table->time_burnout;
+	request.dealine = deadline;
 	request.ticket = ticket;
 	create_request(dongle1, coder, &request);
 	create_request(dongle2, coder, &request);
