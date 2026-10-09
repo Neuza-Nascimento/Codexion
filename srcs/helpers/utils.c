@@ -31,7 +31,7 @@ long	current_time_ms(void)
 	struct timeval	temp;
 
 	gettimeofday(&temp, NULL);
-	return (long)((temp.tv_sec * 1000) + (temp.tv_usec / 1000));
+	return ((long)((temp.tv_sec * 1000) + (temp.tv_usec / 1000)));
 }
 
 struct timespec	future_time(long time_in_ms)

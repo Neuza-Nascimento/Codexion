@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 11:45:31 by username          #+#    #+#             */
-/*   Updated: 2026/10/08 14:56:14 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/09 13:05:38 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	dongle_ok(t_dongle *dongle, t_coder *coder)
 {
 	return (dongle->requests[0].id_coder == coder->id && dongle->is_busy == 0 && current_time_ms() >= dongle->available_at);
 }
-int verify_wait(t_dongle *dongle, t_coder *coder)
+void verify_wait(t_dongle *dongle, t_coder *coder)
 {
 	long time;
 	struct timespec time_f;
@@ -27,10 +27,8 @@ int verify_wait(t_dongle *dongle, t_coder *coder)
 		pthread_mutex_unlock(&dongle->mutex);
 		return ;
 	}
-	else if (coder->id != dongle->requests[0].id_coder)
+	else if (coder->id != dongle->requests[0].id_coder || dongle->is_busy == 1)
 		pthread_cond_wait(&dongle->cond, &dongle->mutex);
-	else if (coder->id == dongle->requests[0].id_coder && dongle->is_busy == 1)
-		return (remove_top(dongle, coder->table), 1);
 	else if (coder->id == dongle->requests[0].id_coder && dongle->is_busy == 0 && current_time_ms() < dongle->available_at)
 	{
 		time = dongle->available_at - current_time_ms();
@@ -38,23 +36,38 @@ int verify_wait(t_dongle *dongle, t_coder *coder)
 		pthread_cond_timedwait(&dongle->cond, &dongle->mutex, &time_f);
 	}
 	pthread_mutex_unlock(&dongle->mutex);
-	return (0);
 }
 
 int wait_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 {
-	if (!dongle_ok(dongle1, coder))
+	if (dongle_ok(dongle1, coder) && dongle2->is_busy == 1)
 	{
+		remove_top(dongle1, coder->table);
+		pthread_cond_broadcast(&dongle1->cond);
+		pthread_mutex_unlock(&dongle1->mutex);
+		verify_wait(dongle2, coder);
+		return (1);
+	}
+	else if (dongle_ok(dongle2, coder) && dongle1->is_busy == 1)
+	{
+		remove_top(dongle2, coder->table);
+		pthread_cond_broadcast(&dongle2->cond);
 		pthread_mutex_unlock(&dongle2->mutex);
-		if (verify_wait(dongle1, coder))
-			return (1);
-		
+		verify_wait(dongle1, coder);
+		return (2);	
 	}
 	else
 	{
-		pthread_mutex_unlock(&dongle1->mutex);
-		if (verify_wait(dongle2, coder))
-			return (2);	
+		if (!dongle_ok(dongle1, coder))
+		{
+			pthread_mutex_unlock(&dongle2->mutex);
+			verify_wait(dongle1, coder);
+		}
+		else
+		{
+			pthread_mutex_unlock(&dongle1->mutex);
+			verify_wait(dongle2, coder);	
+		}
 	}
 	return (0);
 }
@@ -86,6 +99,7 @@ int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 	long	deadline;
 	
 	
+	remove_ok = 0;
 	pthread_mutex_lock(&coder->table->log_mutex);
 	ticket = coder->table->count_tickets;
 	deadline = coder->table->time_burnout;
@@ -96,7 +110,7 @@ int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 	pthread_mutex_unlock(&coder->status_coder);
 	pthread_mutex_lock(&dongle1->mutex);
 	pthread_mutex_lock(&dongle2->mutex);
-	iniciate_request(coder, coder->table, dongle1, dongle2);
+	iniciate_request(coder, ticket, deadline, 0, dongle1, dongle2);
 	pthread_mutex_unlock(&dongle1->mutex);
 	pthread_mutex_unlock(&dongle2->mutex);
 	while (1)
@@ -110,10 +124,7 @@ int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 			return (0);
 		}
 		if (remove_ok == 1 || remove_ok == 2)
-		{
-			if (remove_ok == 1)
-				iniciate_request(coder, ticket, deadline, dongle1, dongle2);
-		}
+				iniciate_request(coder, ticket, deadline, remove_ok, dongle1, dongle2);
 		if (dongle_ok(dongle1, coder) && dongle_ok(dongle2, coder))
 		{
 			take_dongles(dongle1, dongle2, coder);

@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 11:26:58 by username          #+#    #+#             */
-/*   Updated: 2026/10/08 14:58:19 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/09 12:55:03 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,11 @@ void	push_request(t_dongle *dongle, t_request *new_request, t_table *table)
 		else
 			break ;
 	}
-	int i = -1;
-	while (++i < dongle->len_requests)
-	{
-		read_dongle_request(dongle->id, dongle->len_requests, dongle->requests[0].id_coder);
-	}
+	//int i = -1;
+	// while (++i < dongle->len_requests)
+	// {
+	// 	read_dongle_request(dongle->id, dongle->len_requests, dongle->requests[0].id_coder);
+	// }
 }
 
 int	the_best_child(t_dongle *dongle, int pos, t_table *table)
@@ -95,19 +95,7 @@ int	the_best_child(t_dongle *dongle, int pos, t_table *table)
 		best = right;
 	return (best);
 }
-void	remove_by_id(t_dongle *dongle, t_table *table, int id)
-{
-	int	pos;
-	int	best;
-	int i;
 
-	if (dongle->len_requests == 0)
-		return ;
-	while (dongle->requests[i].id_coder != id && i < dongle->len_requests)
-		i ++;
-	ft_swap(&dongle->requests[0], &dongle->requests[i]);
-	remove_top(dongle, table);
-}
 void	remove_top(t_dongle *dongle, t_table *table)
 {
 	int	pos;

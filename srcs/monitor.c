@@ -6,11 +6,14 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 10:55:29 by username          #+#    #+#             */
-/*   Updated: 2026/10/08 11:59:47 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:35:15 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+
+
 
 void	stop_simulation(t_table *table)
 {
