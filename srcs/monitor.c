@@ -6,14 +6,21 @@
 /*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 10:55:29 by username          #+#    #+#             */
-/*   Updated: 2026/10/09 11:35:15 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/10/09 14:32:32 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
+int	simulation_over(t_table *table)
+{
+	int	value;
 
-
+	pthread_mutex_lock(&table->stop_mutex);
+	value = table->simulation_finish;
+	pthread_mutex_unlock(&table->stop_mutex);
+	return (value);
+}
 
 void	stop_simulation(t_table *table)
 {
@@ -32,7 +39,7 @@ void	stop_simulation(t_table *table)
 	}
 }
 
-int	check_burnout(t_table *table)
+static int	check_burnout(t_table *table)
 {
 	int		i;
 	long	last_compile;
@@ -53,7 +60,7 @@ int	check_burnout(t_table *table)
 	return (0);
 }
 
-int	check_compiles(t_table *table)
+static int	check_compiles(t_table *table)
 {
 	int	i;
 	int	compile_count;

@@ -105,6 +105,7 @@ void			create_request(t_dongle *dongle, t_coder *coder, t_request *request);
 void	iniciate_request(t_coder *coder, int ticket, long deadline, int remove, t_dongle *dongle1, t_dongle *dongle2);
 void	leave_dongle(t_dongle *dongle, long cooldown);
 int		acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder);
+int		dongle_ok(t_dongle *dongle, t_coder *coder);
 
 int		parsing(t_table *table, char **av);
 int		is_integer(long number);

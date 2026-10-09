@@ -12,30 +12,30 @@
 
 #include "codexion.h"
 
-int	starts_data(char **av, t_table *data)
+int	starts_table(char **av, t_table *table)
 {
-	data->number_coders = atoi(av[0]);
-	data->time_burnout = atoi(av[1]);
-	data->time_compile = atoi(av[2]);
-	data->time_debug = atoi(av[3]);
-	data->time_refactor = atoi(av[4]);
-	data->compiles_required = atoi(av[5]);
-	data->dongle_cooldown = atoi(av[6]);
-	data->start_time = 0;
-	data->simulation_finish = 0;
-	data->count_tickets = 0;
-	pthread_mutex_init(&data->stop_mutex, NULL);
-	pthread_mutex_init(&data->log_mutex, NULL);
+	table->number_coders = atoi(av[0]);
+	table->time_burnout = atoi(av[1]);
+	table->time_compile = atoi(av[2]);
+	table->time_debug = atoi(av[3]);
+	table->time_refactor = atoi(av[4]);
+	table->compiles_required = atoi(av[5]);
+	table->dongle_cooldown = atoi(av[6]);
+	table->start_time = 0;
+	table->simulation_finish = 0;
+	table->count_tickets = table->number_coders + 1;
+	pthread_mutex_init(&table->stop_mutex, NULL);
+	pthread_mutex_init(&table->log_mutex, NULL);
 	if (strcmp(av[7], "fifo") == 0)
-		data->scheduler = FIFO;
+		table->scheduler = FIFO;
 	else if (strcmp(av[7], "edf") == 0)
-		data->scheduler = EDF;
+		table->scheduler = EDF;
 	else
 		return (0);
 	return (1);
 }
 
-int	parsing(t_table *data, char **av)
+int	parsing(t_table *table, char **av)
 {
 	int		count;
 	long	value;
@@ -53,7 +53,7 @@ int	parsing(t_table *data, char **av)
 		else
 			return (0);
 	}
-	if (!starts_data(av, data))
+	if (!starts_table(av, table))
 		return (0);
 	return (1);
 }

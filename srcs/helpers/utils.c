@@ -54,13 +54,3 @@ void	log_state(int id, char *message, t_table *table)
 	printf("%ld %i %s\n", time, id, message);
 	pthread_mutex_unlock(&table->log_mutex);
 }
-
-int	simulation_over(t_table *table)
-{
-	int	value;
-
-	pthread_mutex_lock(&table->stop_mutex);
-	value = table->simulation_finish;
-	pthread_mutex_unlock(&table->stop_mutex);
-	return (value);
-}
