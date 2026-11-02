@@ -22,7 +22,7 @@ static void	ft_swap(t_request *frist, t_request *second)
 }
 
 static int	has_priority(t_request *request1, t_request *request2,
-	t_table *table)
+		t_table *table)
 {
 	long	deadline1;
 	long	deadline2;
@@ -65,8 +65,8 @@ void	push_request(t_dongle *dongle, t_request *new_request, t_table *table)
 	while (pos > 0)
 	{
 		parent = (pos - 1) / 2;
-		if (has_priority(&dongle->requests[pos],
-				&dongle->requests[parent], table))
+		if (has_priority(&dongle->requests[pos], &dongle->requests[parent],
+				table))
 		{
 			ft_swap(&dongle->requests[pos], &dongle->requests[parent]);
 			pos = parent;
@@ -89,8 +89,8 @@ void	remove_top(t_dongle *dongle, t_table *table)
 	while ((2 * pos) + 1 < dongle->len_requests)
 	{
 		best = the_best_child(dongle, pos, table);
-		if (has_priority(&dongle->requests[best],
-				&dongle->requests[pos], table))
+		if (has_priority(&dongle->requests[best], &dongle->requests[pos],
+				table))
 		{
 			ft_swap(&dongle->requests[pos], &dongle->requests[best]);
 			pos = best;

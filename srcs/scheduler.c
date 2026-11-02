@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 14:15:10 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/11/02 13:16:45 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/02 16:38:07 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ int	dongle_ok(t_dongle *dongle, t_coder *coder)
 		&& current_time_ms() >= dongle->available_at);
 }
 
-void	iniciate_request(t_coder *coder, int ticket, long deadline, int remove,
-		t_dongle *dongle1, t_dongle *dongle2)
+void	iniciate_request(t_coder *coder, int ticket, long deadline,
+		t_dongles *dongles)
 {
 	t_request	request;
 
@@ -34,13 +34,13 @@ void	iniciate_request(t_coder *coder, int ticket, long deadline, int remove,
 	pthread_mutex_unlock(&coder->status_coder);
 	request.dealine = deadline;
 	request.ticket = ticket;
-	if (remove == 1)
-		create_request(dongle1, coder, &request);
-	else if (remove == 2)
-		create_request(dongle2, coder, &request);
+	if (dongles->remove == 1)
+		create_request(dongles->small_dongle, coder, &request);
+	else if (dongles->remove == 2)
+		create_request(dongles->large_dongle, coder, &request);
 	else
 	{
-		create_request(dongle1, coder, &request);
-		create_request(dongle2, coder, &request);
+		create_request(dongles->small_dongle, coder, &request);
+		create_request(dongles->large_dongle, coder, &request);
 	}
 }

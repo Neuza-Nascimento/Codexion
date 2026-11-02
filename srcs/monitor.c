@@ -82,7 +82,7 @@ void	*monitor_routine(void *arg)
 {
 	t_table	*table;
 
-	table = (t_table *) arg;
+	table = (t_table *)arg;
 	while (!simulation_over(table))
 	{
 		if (check_burnout(table))

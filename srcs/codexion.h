@@ -2,14 +2,11 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+
-	+:+     */
-/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+
-	+#+        */
-/*                                                +#+#+#+#+#+
-	+#+           */
-/*   Created: 2026/11/02 14:11:12 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/11/02 14:11:12 by nedo-nas         ###   ########.fr       */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/02 14:43:30 by nedo-nas          #+#    #+#             */
+/*   Updated: 2026/11/02 16:35:37 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +42,16 @@ typedef struct s_dongle
 	long				available_at;
 	pthread_mutex_t		mutex;
 	pthread_cond_t		cond;
-	t_request			requests[2];
+	t_request			*requests;
 
 }						t_dongle;
+
+typedef struct s_dongles
+{
+	int					remove;
+	t_dongle			*small_dongle;
+	t_dongle			*large_dongle;
+}						t_dongles;
 
 typedef struct s_table	t_table;
 
@@ -95,11 +99,9 @@ void					create_request(t_dongle *dongle, t_coder *coder,
 							t_request *request);
 
 void					iniciate_request(t_coder *coder, int ticket,
-							long deadline, int remove, t_dongle *dongle1,
-							t_dongle *dongle2);
+							long deadline, t_dongles *dongles);
 void					leave_dongle(t_dongle *dongle, long cooldown);
-int						acquire_dongles(t_dongle *dongle1, t_dongle *dongle2,
-							t_coder *coder);
+int						acquire_dongles(t_dongles *dongles, t_coder *coder);
 int						dongle_ok(t_dongle *dongle, t_coder *coder);
 
 int						parsing(t_table *table, char **av);
@@ -113,5 +115,13 @@ void					log_state(int id, char *message, t_table *table);
 void					*coder_routine(void *arg);
 void					*monitor_routine(void *arg);
 void					destroy_mutexes(t_table *table);
+
+int						init_request(t_dongles *dongles, t_coder *coder,
+							int ticket, long deadline);
+
+void wait_dongle(t_dongle *dongle, t_coder *coder);
+void take_dongles(t_dongles *dongles, t_coder *coder);
+void verify_wait(t_dongles *dongles, t_coder *coder);
+int wait_dongles(t_dongles *dongles, t_coder *coder);
 
 #endif

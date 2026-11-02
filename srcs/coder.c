@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   coder.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/28 16:29:50 by username          #+#    #+#             */
-/*   Updated: 2026/10/09 14:29:13 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/02 15:10:19 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,25 @@
 int	is_compiling(t_coder *coder)
 {
 	t_table		*table;
-	t_dongle	*small_dongl;
-	t_dongle	*large_dongl;
+	t_dongles	dongles;
 
 	table = coder->table;
-	small_dongl = smallest_dongle(coder->dongle_left, coder->dongle_rigth);
-	large_dongl = large_dongle(coder->dongle_left, coder->dongle_rigth);
+	dongles.small_dongle = smallest_dongle(coder->dongle_left,
+			coder->dongle_rigth);
+	dongles.large_dongle = large_dongle(coder->dongle_left,
+			coder->dongle_rigth);
+	dongles.remove = 0;
 	if (coder->dongle_left == coder->dongle_rigth)
 		return (log_state(coder->id, "has taken a dongle", table), 0);
-	if (!acquire_dongles(small_dongl, large_dongl, coder))
+	if (!acquire_dongles(&dongles, coder))
 		return (0);
 	pthread_mutex_lock(&coder->status_coder);
 	coder->last_compile_start = current_time_ms();
 	pthread_mutex_unlock(&coder->status_coder);
 	log_state(coder->id, "is compiling", table);
 	usleep(table->time_compile * 1000);
-	leave_dongle(small_dongl, table->dongle_cooldown);
-	leave_dongle(large_dongl, table->dongle_cooldown);
+	leave_dongle(dongles.small_dongle, table->dongle_cooldown);
+	leave_dongle(dongles.large_dongle, table->dongle_cooldown);
 	pthread_mutex_lock(&coder->status_coder);
 	coder->compiles_done++;
 	pthread_mutex_unlock(&coder->status_coder);
@@ -55,7 +57,7 @@ void	*coder_routine(void *arg)
 	t_coder	*coder;
 	t_table	*table;
 
-	coder = (t_coder *) arg;
+	coder = (t_coder *)arg;
 	table = coder->table;
 	while (!simulation_over(table))
 	{

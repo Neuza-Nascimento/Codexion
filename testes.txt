@@ -7,21 +7,6 @@ valgrind --tool=helgrind ./codexion 2 800 100 100 100 100 2 fifo
 Testar memory leaks
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./codexion <argumentos>
 
-
-int	read_dongle_request(int id, int len, int idl)
-{
-	// printf("[DONGLE %d] Request: coder=%d ticket=%d deadline=%ld\n",
-	// 	id,
-	// 	request->id_coder,
-	// 	request->ticket,
-	// 	request->dealine);
-
-	printf("[DONGLE %d] Request-len: %d\n, id primeiro: %d\n", id, len, idl);
-
-	return (0);
-}
-	//int i = -1;
-	// while (++i < dongle->len_requests)
-	// {
-	// 	read_dongle_request(dongle->id, dongle->len_requests, dongle->requests[0].id_coder);
-	// }
+Tarefas:
+ - separar funcoes
+ -verificar user_names

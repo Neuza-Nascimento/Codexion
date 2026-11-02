@@ -26,6 +26,9 @@ int	iniciate_dongles(t_table *table)
 		table->dongles[i].is_busy = 0;
 		table->dongles[i].available_at = current_time_ms();
 		table->dongles[i].len_requests = 0;
+		table->dongles[i].requests = malloc(sizeof(t_request) * table->number_coders);
+		if (!table->dongles[i].requests)
+			return (0);
 		pthread_mutex_init(&table->dongles[i].mutex, NULL);
 		pthread_cond_init(&table->dongles[i].cond, NULL);
 		i++;
@@ -65,7 +68,9 @@ void	destroy_mutexes(t_table *table)
 	while (i < table->number_coders)
 	{
 		pthread_mutex_destroy(&table->dongles[i].mutex);
+		pthread_cond_destroy(&table->dongles[i].cond);
 		pthread_mutex_destroy(&table->coders[i].status_coder);
+		free(table->dongles[i].requests);
 		i++;
 	}
 }
