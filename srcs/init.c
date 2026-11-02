@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   init.c                                            :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: username<nedo-nas@student.42porto.com>   #+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/09/23 10:38:31 by username         #+#    #+#              */
-/*   Updated: 2026/10/08 11:59:09 by username        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/02 18:28:31 by nedo-nas          #+#    #+#             */
+/*   Updated: 2026/11/02 18:28:33 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int	iniciate_dongles(t_table *table)
 		table->dongles[i].is_busy = 0;
 		table->dongles[i].available_at = current_time_ms();
 		table->dongles[i].len_requests = 0;
-		table->dongles[i].requests = malloc(sizeof(t_request) * table->number_coders);
+		table->dongles[i].requests = malloc(sizeof(t_request)
+				* table->number_coders);
 		if (!table->dongles[i].requests)
 			return (0);
 		pthread_mutex_init(&table->dongles[i].mutex, NULL);

@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/02 14:43:30 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/11/02 16:35:37 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/02 18:21:45 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,9 @@ void					destroy_mutexes(t_table *table);
 int						init_request(t_dongles *dongles, t_coder *coder,
 							int ticket, long deadline);
 
-void wait_dongle(t_dongle *dongle, t_coder *coder);
-void take_dongles(t_dongles *dongles, t_coder *coder);
-void verify_wait(t_dongles *dongles, t_coder *coder);
-int wait_dongles(t_dongles *dongles, t_coder *coder);
+void					wait_dongle(t_dongle *dongle, t_coder *coder);
+void					take_dongles(t_dongles *dongles, t_coder *coder);
+void					verify_wait(t_dongles *dongles, t_coder *coder);
+int						wait_dongles(t_dongles *dongles, t_coder *coder);
 
 #endif
