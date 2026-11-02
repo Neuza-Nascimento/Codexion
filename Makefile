@@ -12,9 +12,9 @@
 
 NAME = codexion
 
-CC = gcc -g 
+CC = cc 
 
-FLAGS = -Wall -Wextra -Werror -pthread
+FLAGS = -Wall -Wextra -Werror -pthread -g
 
 HEADER = codexion.h
 
@@ -40,4 +40,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus
+format:
+	python3 -m c_formatter_42 srcs/init.c
+
+.PHONY: all clean fclean re format

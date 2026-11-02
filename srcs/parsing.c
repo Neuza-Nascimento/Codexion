@@ -3,7 +3,7 @@
 /*                                                       :::      ::::::::    */
 /*   parsing.c                                         :+:      :+:    :+:    */
 /*                                                   +:+ +:+         +:+      */
-/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
+/*   By: username<nedo-nas@student.42porto.com>   #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/14 12:00:37 by username         #+#    #+#              */
 /*   Updated: 2026/09/29 14:12:57 by username        ###   ########.fr        */
@@ -23,7 +23,7 @@ int	starts_table(char **av, t_table *table)
 	table->dongle_cooldown = atoi(av[6]);
 	table->start_time = 0;
 	table->simulation_finish = 0;
-	table->count_tickets = table->number_coders + 1;
+	table->count_tickets = 0;
 	pthread_mutex_init(&table->stop_mutex, NULL);
 	pthread_mutex_init(&table->log_mutex, NULL);
 	if (strcmp(av[7], "fifo") == 0)

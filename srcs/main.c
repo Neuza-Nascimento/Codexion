@@ -3,7 +3,7 @@
 /*                                                       :::      ::::::::    */
 /*   main.c                                            :+:      :+:    :+:    */
 /*                                                   +:+ +:+         +:+      */
-/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
+/*   By: username<nedo-nas@student.42porto.com>   #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/28 13:31:12 by username         #+#    #+#              */
 /*   Updated: 2026/10/08 11:59:22 by username        ###   ########.fr        */

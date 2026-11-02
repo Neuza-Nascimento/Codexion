@@ -3,7 +3,7 @@
 /*                                                       :::      ::::::::    */
 /*   helpers.c                                         :+:      :+:    :+:    */
 /*                                                   +:+ +:+         +:+      */
-/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
+/*   By: username<nedo-nas@student.42porto.com>   #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/22 15:59:09 by username         #+#    #+#              */
 /*   Updated: 2026/10/08 11:57:48 by username        ###   ########.fr        */

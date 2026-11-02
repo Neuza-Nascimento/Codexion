@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_coder.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 11:45:31 by username          #+#    #+#             */
-/*   Updated: 2026/10/09 15:11:27 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/02 14:40:30 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,12 @@ void	leave_dongle(t_dongle *dongle, long cooldown)
 
 }
 
+
 int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 {
 	int		ticket;
 	int		remove_ok;
 	long	deadline;
-	int		compiles_done;
 	
 	remove_ok = 0;
 	pthread_mutex_lock(&coder->table->log_mutex);
@@ -103,10 +103,7 @@ int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 	pthread_mutex_unlock(&coder->table->log_mutex);
 	pthread_mutex_lock(&coder->status_coder);
 	deadline += coder->last_compile_start;
-	compiles_done = coder->compiles_done;
 	pthread_mutex_unlock(&coder->status_coder);
-	if (compiles_done == 0)
-		ticket = coder->id;
 	pthread_mutex_lock(&dongle1->mutex);
 	pthread_mutex_lock(&dongle2->mutex);
 	iniciate_request(coder, ticket, deadline, 0, dongle1, dongle2);
@@ -114,7 +111,7 @@ int	acquire_dongles(t_dongle *dongle1, t_dongle *dongle2, t_coder *coder)
 	pthread_mutex_unlock(&dongle2->mutex);
 	while (1)
 	{
-		pthread_mutex_lock(&dongle1->mutex);
+		pthread_mutex_lock(&dongle1->mutex); 
 		pthread_mutex_lock(&dongle2->mutex);
 		if (simulation_over(coder->table))
 		{

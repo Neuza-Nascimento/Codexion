@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helpers_parsing.c                                  :+:      :+:    :+:   */
+/*   utils_parsing.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nedo-nas <nedo-nas@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/28 12:30:52 by username          #+#    #+#             */
-/*   Updated: 2026/09/29 14:12:14 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/02 13:18:58 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,29 +35,4 @@ int	is_valid_number(char *av)
 		i++;
 	}
 	return (1);
-}
-
-int	ft_atol(char *str)
-{
-	int		i;
-	long	res;
-	long	sign;
-
-	i = 0;
-	res = 0;
-	sign = 1;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign *= -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		res = (res * 10) + (str[i] - '0');
-		i++;
-	}
-	return (res * sign);
 }

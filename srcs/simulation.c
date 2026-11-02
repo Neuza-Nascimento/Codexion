@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   simulation.c                                      :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/09/28 18:12:44 by username         #+#    #+#              */
-/*   Updated: 2026/09/29 14:13:02 by username        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   simulation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/28 18:12:44 by username          #+#    #+#             */
+/*   Updated: 2026/11/02 14:10:02 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static int	create_threads(t_table *table)
 	{
 		table->coders[i].table = table;
 		if (pthread_create(&table->coders[i].thread, NULL, coder_routine,
-					&table->coders[i]) != 0)
-		return (0);
+				&table->coders[i]) != 0)
+			return (0);
 		i++;
 	}
 	return (1);
