@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/02 14:43:30 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/11/02 18:21:45 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:26:13 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,25 @@ typedef struct s_table
 	t_coder				*coders;
 }						t_table;
 
+int						wait_dongles(t_dongles *dongles, t_coder *coder);
+int						acquire_dongles(t_dongles *dongles, t_coder *coder);
+int						dongle_ok(t_dongle *dongle, t_coder *coder);
+void					wait_dongle(t_dongle *dongle, t_coder *coder);
+void					take_dongles(t_dongles *dongles, t_coder *coder);
+void					verify_wait(t_dongles *dongles, t_coder *coder);
+void					leave_dongle(t_dongle *dongle, long cooldown);
 t_dongle				*smallest_dongle(t_dongle *d1, t_dongle *d2);
 t_dongle				*large_dongle(t_dongle *d1, t_dongle *d2);
 
+int						init_request(t_dongles *dongles, t_coder *coder,
+							int ticket, long deadline);
+void					iniciate_request(t_coder *coder, int ticket,
+							long deadline, t_dongles *dongles);
+void					create_request(t_dongle *dongle, t_coder *coder,
+							t_request *request);
 void					push_request(t_dongle *dongle, t_request *new_request,
 							t_table *table);
 void					remove_top(t_dongle *dongle, t_table *table);
-struct timespec			future_time(long time_in_ms);
-void					create_request(t_dongle *dongle, t_coder *coder,
-							t_request *request);
-
-void					iniciate_request(t_coder *coder, int ticket,
-							long deadline, t_dongles *dongles);
-void					leave_dongle(t_dongle *dongle, long cooldown);
-int						acquire_dongles(t_dongles *dongles, t_coder *coder);
-int						dongle_ok(t_dongle *dongle, t_coder *coder);
 
 int						parsing(t_table *table, char **av);
 int						is_integer(long number);
@@ -111,17 +115,10 @@ int						iniciate_table(t_table *table);
 int						simulation(t_table *table);
 int						simulation_over(t_table *table);
 long					current_time_ms(void);
+struct timespec			future_time(long time_in_ms);
 void					log_state(int id, char *message, t_table *table);
 void					*coder_routine(void *arg);
 void					*monitor_routine(void *arg);
 void					destroy_mutexes(t_table *table);
-
-int						init_request(t_dongles *dongles, t_coder *coder,
-							int ticket, long deadline);
-
-void					wait_dongle(t_dongle *dongle, t_coder *coder);
-void					take_dongles(t_dongles *dongles, t_coder *coder);
-void					verify_wait(t_dongles *dongles, t_coder *coder);
-int						wait_dongles(t_dongles *dongles, t_coder *coder);
 
 #endif

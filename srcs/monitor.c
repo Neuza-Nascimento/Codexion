@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 10:55:29 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/11/02 18:28:55 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:24:07 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	check_burnout(t_table *table)
 		pthread_mutex_lock(&table->coders[i].status_coder);
 		last_compile = table->coders[i].last_compile_start;
 		pthread_mutex_unlock(&table->coders[i].status_coder);
-		if (current_time_ms() - last_compile >= table->time_burnout)
+		if (current_time_ms() - last_compile > table->time_burnout)
 		{
 			log_state(table->coders[i].id, "burned out", table);
 			return (1);
