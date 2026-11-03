@@ -6,7 +6,7 @@
 /*   By: nedo-nas <nedo-nas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:00:37 by nedo-nas          #+#    #+#             */
-/*   Updated: 2026/11/02 18:29:33 by nedo-nas         ###   ########.fr       */
+/*   Updated: 2026/11/03 14:51:59 by nedo-nas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 int	starts_table(char **av, t_table *table)
 {
 	table->number_coders = atoi(av[0]);
-	if (table->number_coders <= 0)
-		return (0);
 	table->time_burnout = atoi(av[1]);
 	table->time_compile = atoi(av[2]);
 	table->time_debug = atoi(av[3]);
