@@ -2,6 +2,12 @@
 
 # Codexion
 
+<div align="center">
+   
+![Codexion](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmxreXFyOXM4MmJ5dHlhNTd0MnM5a2lrZGJtaGpxem93MzA5dmRoZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L0waa8YxiEwmZ1jB54/giphy.gif)
+
+</div>
+
 ## Description
 
 **Codexion** is a concurrency simulation written in C with POSIX threads. A group of coders sits around a circular co-working hub. Between each pair of neighbours lies one USB dongle, so there are exactly as many dongles as coders. To compile their quantum code, a coder needs **two dongles at the same time**, one on the left and one on the right. After compiling, the coder debugs, then refactors, then tries to compile again.
